@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any
 import numpy as np
-from ..storage.base import Storage
+from vision_classifier.storage.base import Storage
 
 class Classifier(ABC):
     @abstractmethod

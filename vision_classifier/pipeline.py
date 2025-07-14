@@ -1,9 +1,9 @@
 from typing import List
-from .encoders.base import Encoder
-from .classifiers.base import Classifier
-from .storage.base import Storage
-from .storage.in_memory import InMemoryStorage
-from .registry import ENCODERS, CLASSIFIERS
+from vision_classifier.encoders.base import Encoder
+from vision_classifier.classifiers.base import Classifier
+from vision_classifier.storage.base import Storage
+from vision_classifier.storage.in_memory import InMemoryStorage
+from vision_classifier.registry import ENCODERS, CLASSIFIERS
 import pickle
 
 class VisionClassifier:

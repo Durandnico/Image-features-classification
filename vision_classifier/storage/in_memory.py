@@ -1,7 +1,7 @@
 import pickle
 from typing import List, Dict
 import numpy as np
-from .base import Storage
+from vision_classifier.storage.base import Storage
 from datetime import datetime
 
 class InMemoryStorage(Storage):

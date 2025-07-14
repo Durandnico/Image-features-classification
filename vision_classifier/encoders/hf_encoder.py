@@ -3,8 +3,8 @@ import torch.nn.functional as F
 from PIL import Image
 from transformers import AutoModel, AutoProcessor, AutoVideoProcessor
 import numpy as np
-from .base import Encoder
-from ..registry import register_encoder
+from vision_classifier.encoders.base import Encoder
+from vision_classifier.registry import register_encoder
 
 def attention_pooling(embeddings):
     """

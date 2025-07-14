@@ -1,1 +1,1 @@
-from .pipeline import VisionClassifier
+from vision_classifier.pipeline import VisionClassifier

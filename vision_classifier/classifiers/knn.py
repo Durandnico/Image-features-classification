@@ -1,10 +1,10 @@
 from typing import Dict
 import numpy as np
-from .base import Classifier
-from ..storage.base import Storage
-from ..similarity import metrics
+from vision_classifier.classifiers.base import Classifier
+from vision_classifier.storage.base import Storage
+from vision_classifier.similarity import metrics
 from collections import Counter
-from ..registry import register_classifier
+from vision_classifier.registry import register_classifier
 
 @register_classifier("knn")
 class KNNClassifier(Classifier):

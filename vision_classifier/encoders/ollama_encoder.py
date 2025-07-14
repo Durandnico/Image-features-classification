@@ -1,7 +1,7 @@
 import ollama
 import numpy as np
-from .base import Encoder
-from ..registry import register_encoder
+from vision_classifier.encoders.base import Encoder
+from vision_classifier.registry import register_encoder
 
 @register_encoder("ollama")
 class OllamaEncoder(Encoder):
