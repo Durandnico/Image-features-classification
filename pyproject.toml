@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "vision_classifier"
 version = "0.0.1"
 authors = [
-  { name="Example Author", email="author@example.com" },
+  { name="Durandnico", email="durandnico@duck.com" },
 ]
 description = "A few-shot vision classifier package."
 readme = "README.md"
@@ -31,5 +31,3 @@ ollama = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/pypa/sampleproject"
-"Bug Tracker" = "https://github.com/pypa/sampleproject/issues"
