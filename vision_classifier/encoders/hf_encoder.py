@@ -4,6 +4,7 @@ from PIL import Image
 from transformers import AutoModel, AutoProcessor, AutoVideoProcessor
 import numpy as np
 from .base import Encoder
+from ..registry import register_encoder
 
 def attention_pooling(embeddings):
     """
@@ -15,6 +16,7 @@ def attention_pooling(embeddings):
     pooled = torch.sum(attention_weights.unsqueeze(1) * embeddings, dim=0, keepdim=True)
     return pooled
 
+@register_encoder("huggingface")
 class HuggingFaceEncoder(Encoder):
     def __init__(self, model_name="openai/clip-vit-base-patch32", device=None):
         self.model_name = model_name
@@ -70,3 +72,9 @@ class HuggingFaceEncoder(Encoder):
 
             embedding = features / features.norm(dim=1, keepdim=True)
             return embedding.cpu().numpy()
+
+    def get_config(self):
+        return {"model_name": self.model_name, "device": self.device}
+
+    def get_name(self):
+        return "huggingface"

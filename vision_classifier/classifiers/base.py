@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, Any
 import numpy as np
 from ..storage.base import Storage
 
@@ -10,4 +10,12 @@ class Classifier(ABC):
 
     @abstractmethod
     def predict(self, query_embedding: np.ndarray) -> Dict:
+        pass
+
+    @abstractmethod
+    def get_config(self) -> Dict[str, Any]:
+        pass
+
+    @abstractmethod
+    def get_name(self) -> str:
         pass

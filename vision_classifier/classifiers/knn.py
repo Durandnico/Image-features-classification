@@ -2,13 +2,16 @@ from typing import Dict
 import numpy as np
 from .base import Classifier
 from ..storage.base import Storage
-from ..similarity.metrics import cosine_similarity
+from ..similarity import metrics
 from collections import Counter
+from ..registry import register_classifier
 
+@register_classifier("knn")
 class KNNClassifier(Classifier):
-    def __init__(self, k=5, similarity_metric=cosine_similarity):
+    def __init__(self, k=5, similarity_metric="cosine_similarity"):
         self.k = k
-        self.similarity_metric = similarity_metric
+        self.similarity_metric_name = similarity_metric
+        self.similarity_metric = getattr(metrics, similarity_metric)
         self.storage = None
 
     def fit(self, storage: Storage):
@@ -41,3 +44,9 @@ class KNNClassifier(Classifier):
             "confidence": confidence,
             "neighbors": top_k_neighbors
         }
+
+    def get_config(self):
+        return {"k": self.k, "similarity_metric": self.similarity_metric_name}
+
+    def get_name(self):
+        return "knn"

@@ -16,9 +16,9 @@ class Storage(ABC):
         pass
 
     @abstractmethod
-    def save(self, path: str):
+    def save(self, path: str, encoder: "Encoder", classifier: "Classifier"):
         pass
 
     @abstractmethod
-    def load(self, path: str):
+    def load(self, path: str, encoder: "Encoder", classifier: "Classifier"):
         pass

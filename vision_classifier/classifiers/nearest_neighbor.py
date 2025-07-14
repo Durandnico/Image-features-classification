@@ -2,11 +2,14 @@ from typing import Dict
 import numpy as np
 from .base import Classifier
 from ..storage.base import Storage
-from ..similarity.metrics import cosine_similarity
+from ..similarity import metrics
+from ..registry import register_classifier
 
+@register_classifier("nearest_neighbor")
 class NearestNeighborClassifier(Classifier):
-    def __init__(self, similarity_metric=cosine_similarity, threshold=0.75):
-        self.similarity_metric = similarity_metric
+    def __init__(self, similarity_metric="cosine_similarity", threshold=0.75):
+        self.similarity_metric_name = similarity_metric
+        self.similarity_metric = getattr(metrics, similarity_metric)
         self.threshold = threshold
         self.storage = None
 
@@ -47,3 +50,9 @@ class NearestNeighborClassifier(Classifier):
             "confidence": confidence,
             "top_k": sorted_results
         }
+
+    def get_config(self):
+        return {"similarity_metric": self.similarity_metric_name, "threshold": self.threshold}
+
+    def get_name(self):
+        return "nearest_neighbor"

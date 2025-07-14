@@ -1,7 +1,9 @@
 import ollama
 import numpy as np
 from .base import Encoder
+from ..registry import register_encoder
 
+@register_encoder("ollama")
 class OllamaEncoder(Encoder):
     def __init__(self, model_name='mixtral', host=None):
         self.model_name = model_name
@@ -15,3 +17,9 @@ class OllamaEncoder(Encoder):
             prompt=image_data
         )
         return np.array(res["embedding"])
+
+    def get_config(self):
+        return {"model_name": self.model_name, "host": self.client.host}
+
+    def get_name(self):
+        return "ollama"

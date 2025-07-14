@@ -22,20 +22,42 @@ class InMemoryStorage(Storage):
     def get_all_classes(self) -> List[str]:
         return list(self.class_embeddings.keys())
 
-    def save(self, path: str = "few_shot_system.pkl"):
+    def save(self, path: str, encoder: "Encoder", classifier: "Classifier"):
         state = {
-            "class_embeddings": self.class_embeddings,
-            "class_examples": self.class_examples,
-            "timestamp": datetime.now().isoformat()
+            "encoder_metadata": {
+                "name": encoder.get_name(),
+                "config": encoder.get_config(),
+            },
+            "classifier_metadata": {
+                "name": classifier.get_name(),
+                "config": classifier.get_config(),
+            },
+            "data": {
+                "class_embeddings": self.class_embeddings,
+                "class_examples": self.class_examples,
+            },
+            "timestamp": datetime.now().isoformat(),
         }
         with open(path, "wb") as f:
             pickle.dump(state, f)
         print(f"System state saved to {path}")
 
-    def load(self, path: str):
+    def load(self, path: str, encoder: "Encoder", classifier: "Classifier"):
         with open(path, "rb") as f:
             state = pickle.load(f)
-        self.class_embeddings = state["class_embeddings"]
-        self.class_examples = state["class_examples"]
+
+        if state["encoder_metadata"]["name"] != encoder.get_name():
+            raise ValueError(
+                f"Encoder mismatch: expected {encoder.get_name()}, "
+                f"got {state['encoder_metadata']['name']}"
+            )
+        if state["classifier_metadata"]["name"] != classifier.get_name():
+            raise ValueError(
+                f"Classifier mismatch: expected {classifier.get_name()}, "
+                f"got {state['classifier_metadata']['name']}"
+            )
+
+        self.class_embeddings = state["data"]["class_embeddings"]
+        self.class_examples = state["data"]["class_examples"]
         print(f"System state loaded from {path}")
         print(f"Available classes: {list(self.class_embeddings.keys())}")

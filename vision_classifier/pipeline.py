@@ -2,6 +2,8 @@ from typing import List
 from .encoders.base import Encoder
 from .classifiers.base import Classifier
 from .storage.base import Storage
+from .storage.in_memory import InMemoryStorage
+from .registry import ENCODERS, CLASSIFIERS
 import pickle
 
 class VisionClassifier:
@@ -30,14 +32,30 @@ class VisionClassifier:
         return self.classifier.predict(query_embedding)
 
     def save(self, path: str = "vision_classifier_state.pkl"):
-        with open(path, "wb") as f:
-            pickle.dump({
-                'storage': self.storage,
-                'classifier': self.classifier
-            }, f)
+        self.storage.save(path, self.encoder, self.classifier)
 
     def load(self, path: str):
+        self.storage.load(path, self.encoder, self.classifier)
+
+    @staticmethod
+    def load_from_pretrained(path: str):
         with open(path, "rb") as f:
-            data = pickle.load(f)
-        self.storage = data['storage']
-        self.classifier = data['classifier']
+            state = pickle.load(f)
+
+        encoder_name = state["encoder_metadata"]["name"]
+        encoder_config = state["encoder_metadata"]["config"]
+        encoder_class = ENCODERS[encoder_name]
+        encoder = encoder_class(**encoder_config)
+
+        classifier_name = state["classifier_metadata"]["name"]
+        classifier_config = state["classifier_metadata"]["config"]
+        classifier_class = CLASSIFIERS[classifier_name]
+        classifier = classifier_class(**classifier_config)
+
+        storage = InMemoryStorage()
+        storage.class_embeddings = state["data"]["class_embeddings"]
+        storage.class_examples = state["data"]["class_examples"]
+
+        vision_classifier = VisionClassifier(encoder, classifier, storage)
+        vision_classifier.train()
+        return vision_classifier
