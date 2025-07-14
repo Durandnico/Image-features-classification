@@ -44,11 +44,29 @@ class VisionClassifier:
 
         encoder_name = state["encoder_metadata"]["name"]
         encoder_config = state["encoder_metadata"]["config"]
+        
+        try:
+            if encoder_name == "huggingface":
+                from .encoders.hf_encoder import HuggingFaceEncoder
+            elif encoder_name == "ollama":
+                from .encoders.ollama_encoder import OllamaEncoder
+        except ImportError:
+            raise ImportError(f"Could not import {encoder_name} encoder. Please install the required dependencies.")
+
         encoder_class = ENCODERS[encoder_name]
         encoder = encoder_class(**encoder_config)
 
         classifier_name = state["classifier_metadata"]["name"]
         classifier_config = state["classifier_metadata"]["config"]
+
+        try:
+            if classifier_name == "knn":
+                from .classifiers.knn import KNNClassifier
+            elif classifier_name == "nearest_neighbor":
+                from .classifiers.nearest_neighbor import NearestNeighborClassifier
+        except ImportError:
+            raise ImportError(f"Could not import {classifier_name} classifier. Please install the required dependencies.")
+
         classifier_class = CLASSIFIERS[classifier_name]
         classifier = classifier_class(**classifier_config)
 
