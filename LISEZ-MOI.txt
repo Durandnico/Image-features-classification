@@ -1,0 +1,23 @@
+# Vision Classifier
+
+A few-shot vision classifier package that can be used with different encoders like Hugging Face and Ollama.
+
+## Installation
+
+Install the core package with:
+
+```bash
+pip install vision-classifier
+```
+
+To use the Hugging Face encoder, install the `hf` extra:
+
+```bash
+pip install vision-classifier[hf]
+```
+
+To use the Ollama encoder, install the `ollama` extra:
+
+```bash
+pip install vision-classifier[ollama]
+```
