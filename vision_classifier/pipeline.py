@@ -7,19 +7,23 @@ from vision_classifier.registry import ENCODERS, CLASSIFIERS
 import pickle
 
 class VisionClassifier:
-    def __init__(self, encoder: Encoder, classifier: Classifier, storage: Storage):
+    def __init__(self, encoder: Encoder, classifier: Classifier, storage: Storage, store_images: bool = False):
         self.encoder = encoder
         self.classifier = classifier
         self.storage = storage
+        self.store_images = store_images
 
     def add_examples(self, class_name: str, image_paths: List[str]):
         for img_path in image_paths:
             try:
                 embedding = self.encoder.encode(img_path)
-                self.storage.add_embedding(class_name, embedding, img_path)
+                image = None
+                if self.store_images:
+                    with open(img_path, "rb") as f:
+                        image = f.read()
+                self.storage.add_embedding(class_name, embedding, img_path, image=image)
             except Exception as e:
                 print(f"Error processing image {img_path}: {e}")
-        print(f"Added {len(image_paths)} examples for class '{class_name}'")
 
     def train(self):
         self.classifier.fit(self.storage)
@@ -73,6 +77,7 @@ class VisionClassifier:
         storage = InMemoryStorage()
         storage.class_embeddings = state["data"]["class_embeddings"]
         storage.class_examples = state["data"]["class_examples"]
+        storage.class_images = state["data"].get("class_images", {})
 
         vision_classifier = VisionClassifier(encoder, classifier, storage)
         vision_classifier.train()

@@ -4,7 +4,7 @@ import numpy as np
 
 class Storage(ABC):
     @abstractmethod
-    def add_embedding(self, class_name: str, embedding: np.ndarray, example_path: str):
+    def add_embedding(self, class_name: str, embedding: np.ndarray, example_path: str, image: bytes = None):
         pass
 
     @abstractmethod

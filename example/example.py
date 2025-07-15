@@ -14,7 +14,8 @@ def creating_new_classifier_huggingface():
     classifier = NearestNeighborClassifier()  # You can switch between KNN and Nearest Neighbor
 
     # Create the main classifier instance
-    vision_classifier = VisionClassifier(encoder, classifier, storage)
+    store_images = False # Set to True if you want to store images in the storage
+    vision_classifier = VisionClassifier(encoder, classifier, storage, store_images=store_images)
 
     # Add examples
     cat_images = glob.glob("example_images/cats/*.jpg")
