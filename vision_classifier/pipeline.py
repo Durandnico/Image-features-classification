@@ -33,6 +33,8 @@ class VisionClassifier:
         if not self.storage.get_all_classes():
             raise ValueError("No examples added yet. Add examples and train first.")
         query_embedding = self.encoder.encode(image_path)
+        print(f"Query embedding for {image_path}: ")
+        print(query_embedding)
         return self.classifier.predict(query_embedding)
 
     def save(self, path: str = "vision_classifier_state.pkl"):

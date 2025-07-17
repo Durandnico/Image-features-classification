@@ -71,7 +71,7 @@ class HuggingFaceEncoder(Encoder):
                 features = attention_pooling(features)
 
             embedding = features / features.norm(dim=1, keepdim=True)
-            return embedding.cpu().numpy()
+            return embedding.cpu().numpy().squeeze()
 
     def get_config(self):
         return {"model_name": self.model_name, "device": self.device}

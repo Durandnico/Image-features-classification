@@ -14,6 +14,10 @@ class Storage(ABC):
     @abstractmethod
     def get_all_classes(self) -> List[str]:
         pass
+    
+    @abstractmethod
+    def get_all_data(self) -> Dict[str, Dict[str, List]]:
+        pass
 
     @abstractmethod
     def save(self, path: str, encoder: "Encoder", classifier: "Classifier"):

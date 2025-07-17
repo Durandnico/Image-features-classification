@@ -29,5 +29,8 @@ hf = [
 ollama = [
     "ollama",
 ]
+visualization = [
+    "fiftyone",
+]
 
 [project.urls]

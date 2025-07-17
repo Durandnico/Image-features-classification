@@ -25,6 +25,13 @@ class InMemoryStorage(Storage):
     def get_all_classes(self) -> List[str]:
         return list(self.class_embeddings.keys())
 
+    def get_all_data(self) -> Dict[str, Dict[str, List]]:
+        return {
+            "class_embeddings": self.class_embeddings,
+            "class_examples": self.class_examples,
+            "class_images": self.class_images,
+        }
+
     def save(self, path: str, encoder: "Encoder", classifier: "Classifier"):
         state = {
             "encoder_metadata": {
