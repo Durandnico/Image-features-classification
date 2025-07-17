@@ -4,6 +4,7 @@ from vision_classifier.encoders.hf_encoder import HuggingFaceEncoder
 from vision_classifier.classifiers.knn import KNNClassifier
 from vision_classifier.classifiers.nearest_neighbor import NearestNeighborClassifier
 from vision_classifier.storage.in_memory import InMemoryStorage
+from vision_classifier.visualization.fiftyone_visualizer import FiftyOneVisualizer
 
 def creating_new_classifier_huggingface():
 
@@ -14,12 +15,12 @@ def creating_new_classifier_huggingface():
     classifier = NearestNeighborClassifier()  # You can switch between KNN and Nearest Neighbor
 
     # Create the main classifier instance
-    store_images = False # Set to True if you want to store images in the storage
+    store_images = True # Set to True if you want to store images in the storage
     vision_classifier = VisionClassifier(encoder, classifier, storage, store_images=store_images)
 
     # Add examples
-    cat_images = glob.glob("example_images/cats/*.jpg")
-    dog_images = glob.glob("example_images/dogs/*.jpg")
+    cat_images = glob.glob("example/example_images/cats/*.jpg")
+    dog_images = glob.glob("example/example_images/dogs/*.jpg")
     
     print(f"Found {len(cat_images)} cat images and {len(dog_images)} dog images.")
     print(cat_images[:2])  # Print first two cat images for verification
@@ -32,7 +33,7 @@ def creating_new_classifier_huggingface():
     vision_classifier.train()
 
     # Classify a new image
-    new_image_path = "example_images/cats/cat2.jpg"  # Using one of the training images for demonstration
+    new_image_path = "example/example_images/cats/cat2.jpg"  # Using one of the training images for demonstration
     prediction = vision_classifier.classify_image(new_image_path)
     print(f"Classification result for {new_image_path}: {prediction}")
 
@@ -44,7 +45,7 @@ def creating_new_classifier_huggingface():
 def loading_pretrained_classifier_huggingface():
 
     # Save the classifier state
-    new_image_path = "example_images/cats/cat2.jpg"  # Using one of the training images for demonstration
+    new_image_path = "example/example_images/cats/cat2.jpg"  # Using one of the training images for demonstration
 
     # Load the classifier state
     new_classifier = VisionClassifier.load_from_pretrained("siglip2.pkl")
@@ -52,6 +53,11 @@ def loading_pretrained_classifier_huggingface():
     # Classify with the loaded classifier
     prediction_after_load = new_classifier.classify_image(new_image_path)
     print(f"Classification result after loading for {new_image_path}: {prediction_after_load}")
+
+def visualize_embeddings():
+    classifier = VisionClassifier.load_from_pretrained("siglip2.pkl")
+    visualizer = FiftyOneVisualizer(classifier.storage)
+    visualizer.visualize("image_embeddings_visualization", method="tsne")
 
 
 if __name__ == "__main__":
@@ -62,5 +68,9 @@ if __name__ == "__main__":
     print("\n" + "=" * 50)
     print("\nLoading a pretrained classifier with HuggingFace encoder...")
     print("=" * 50)
-    # Load a pretrained classifier
     loading_pretrained_classifier_huggingface()
+
+    print("\n" + "=" * 50)
+    print("\nVisualizing embeddings with FiftyOne...")
+    print("=" * 50)
+    visualize_embeddings()
