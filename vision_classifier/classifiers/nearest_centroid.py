@@ -30,7 +30,7 @@ class NearestCentroidClassifier(Classifier):
         # Sort by distance (descending for similarity, ascending for distance)
         distances.sort(key=lambda x: x[0], reverse=True)
         
-        prediction, confidence = distances[0]
+        confidence, prediction = distances[0]
         
         return {
             "prediction": prediction,
