@@ -19,6 +19,7 @@ classifiers = [
 dependencies = [
     "numpy",
     "Pillow",
+    "scikit-learn",
 ]
 
 [project.optional-dependencies]
