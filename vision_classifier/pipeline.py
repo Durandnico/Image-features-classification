@@ -29,6 +29,10 @@ class VisionClassifier:
         self.classifier.fit(self.storage)
         print("Classifier trained.")
 
+    def set_classifier(self, new_classifier: Classifier):
+        self.classifier = new_classifier
+        self.train()
+
     def classify_image(self, image_path: str):
         if not self.storage.get_all_classes():
             raise ValueError("No examples added yet. Add examples and train first.")
