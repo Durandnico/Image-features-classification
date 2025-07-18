@@ -20,7 +20,7 @@ class ProxyClassifier(Classifier):
 
     def get_config(self) -> Dict[str, Any]:
         return {
-            "proxy": [classifier.get_config() for classifier in self.classifiers]
+                "proxy": {classifier.get_name(): classifier.get_config() for classifier in self.classifiers}
         }
 
     def get_name(self) -> str:

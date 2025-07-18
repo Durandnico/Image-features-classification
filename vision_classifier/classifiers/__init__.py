@@ -1,0 +1,6 @@
+from vision_classifier.classifiers.base import Classifier
+from vision_classifier.classifiers.knn import KNNClassifier
+from vision_classifier.classifiers.nearest_neighbor import NearestNeighborClassifier
+from vision_classifier.classifiers.nearest_centroid import NearestCentroidClassifier
+from vision_classifier.classifiers.svm import SVMClassifier
+from vision_classifier.classifiers.proxy import ProxyClassifier
