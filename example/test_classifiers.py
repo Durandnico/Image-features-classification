@@ -4,6 +4,7 @@ from vision_classifier.encoders.hf_encoder import HuggingFaceEncoder
 from vision_classifier.classifiers.knn import KNNClassifier
 from vision_classifier.classifiers.nearest_centroid import NearestCentroidClassifier
 from vision_classifier.classifiers.svm import SVMClassifier
+from vision_classifier.classifiers.proxy import ProxyClassifier
 from vision_classifier.storage.in_memory import InMemoryStorage
 
 def test_classifiers():
@@ -44,6 +45,26 @@ def test_classifiers():
     prediction = vision_classifier.classify(cat_images[1])
     print(f"Prediction for a cat image with SVM: {prediction}")
     # assert prediction['prediction'] == 'cat'
+
+
+    #Test multiple classifier at once
+    # Create a list of classifiers
+    classifiers = [
+        KNNClassifier(k=3),
+        KNNClassifier(k=5),
+        NearestCentroidClassifier(),
+        SVMClassifier(),
+    ]
+
+    # Create a proxy classifier
+    proxy_classifier = ProxyClassifier(classifiers)
+    vision_classifier.set_classifier(proxy_classifier)
+    print("\n" + "="*50 + "\n")
+    print("--- Testing Proxy Classifier with Multiple Classifiers ---")
+    prediction = vision_classifier.classify(cat_images[0])
+    print(f"Prediction for a cat image with Proxy Classifier: ")
+    for key, output in prediction.items():
+        print(f"{key}: {output}")
 
 if __name__ == "__main__":
     test_classifiers()
