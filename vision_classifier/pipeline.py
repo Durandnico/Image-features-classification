@@ -4,6 +4,7 @@ from vision_classifier.classifiers.base import Classifier
 from vision_classifier.storage.base import Storage
 from vision_classifier.storage.in_memory import InMemoryStorage
 from vision_classifier.registry import ENCODERS, CLASSIFIERS
+import numpy as np
 import pickle
 
 class VisionClassifier:
@@ -37,8 +38,12 @@ class VisionClassifier:
         if not self.storage.get_all_classes():
             raise ValueError("No examples added yet. Add examples and train first.")
         query_embedding = self.encoder.encode(image_path)
-        print(f"Query embedding for {image_path}: ")
-        print(query_embedding)
+        return self.classifier.predict(query_embedding)
+
+    def classify_array(self, image_array: np.ndarray):
+        if not self.storage.get_all_classes():
+            raise ValueError("No examples added yet. Add examples and train first.")
+        query_embedding = self.encoder._get_embedding(image_array)
         return self.classifier.predict(query_embedding)
 
     def save(self, path: str = "vision_classifier_state.pkl"):
