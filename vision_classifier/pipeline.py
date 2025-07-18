@@ -8,11 +8,14 @@ import numpy as np
 import pickle
 
 class VisionClassifier:
-    def __init__(self, encoder: Encoder, classifier: Classifier, storage: Storage, store_images: bool = False):
+    def __init__(self, encoder: Encoder, classifier: Classifier, storage: Storage, store_images: bool = False, device: str = "cpu"):
         self.encoder = encoder
         self.classifier = classifier
         self.storage = storage
         self.store_images = store_images
+
+        # Set the device for the encoder
+        self.encoder.to(device)
 
     def add_examples(self, class_name: str, image_paths: List[str]):
         for img_path in image_paths:
@@ -33,6 +36,9 @@ class VisionClassifier:
     def set_classifier(self, new_classifier: Classifier):
         self.classifier = new_classifier
         self.train()
+
+    def to(self, device: str):
+        self.encoder.to(device)
 
     def _classify_image(self, image_path: str):
         query_embedding = self.encoder.encode(image_path)
@@ -60,7 +66,7 @@ class VisionClassifier:
         self.storage.load(path, self.encoder, self.classifier)
 
     @staticmethod
-    def load_from_pretrained(path: str):
+    def load_from_pretrained(path: str, device: str = "cpu"):
         with open(path, "rb") as f:
             state = pickle.load(f)
 
@@ -76,7 +82,7 @@ class VisionClassifier:
             raise ImportError(f"Could not import {encoder_name} encoder. Please install the required dependencies.")
 
         encoder_class = ENCODERS[encoder_name]
-        encoder = encoder_class(**encoder_config)
+        encoder = encoder_class(**encoder_config, device=device)
 
         classifier_name = state["classifier_metadata"]["name"].split("-")[0]
         classifier_config = state["classifier_metadata"]["config"]

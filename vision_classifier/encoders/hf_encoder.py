@@ -18,9 +18,9 @@ def attention_pooling(embeddings):
 
 @register_encoder("huggingface")
 class HuggingFaceEncoder(Encoder):
-    def __init__(self, model_name="openai/clip-vit-base-patch32", device=None):
+    def __init__(self, model_name="openai/clip-vit-base-patch32", device: str = "cpu"):
+        super().__init__(device)
         self.model_name = model_name
-        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.model = None
         self.processor = None
         self.processor_type = None
@@ -78,3 +78,7 @@ class HuggingFaceEncoder(Encoder):
 
     def get_name(self):
         return "huggingface"
+
+    def to(self, device: str):
+        self.device = device
+        self.model.to(self.device)

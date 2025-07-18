@@ -5,7 +5,8 @@ from vision_classifier.registry import register_encoder
 
 @register_encoder("ollama")
 class OllamaEncoder(Encoder):
-    def __init__(self, model_name='mixtral', host=None):
+    def __init__(self, model_name='mixtral', host=None, device: str = "cpu"):
+        super().__init__(device)
         self.model_name = model_name
         self.client = ollama.Client(host=host)
 
@@ -23,3 +24,6 @@ class OllamaEncoder(Encoder):
 
     def get_name(self):
         return "ollama"
+
+    def to(self, device: str):
+        pass
