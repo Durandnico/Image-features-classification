@@ -12,7 +12,6 @@ def creating_new_classifier_huggingface():
     encoder = HuggingFaceEncoder("google/siglip2-so400m-patch14-224")
     storage = InMemoryStorage()
     classifier = KNNClassifier(k=3)
-    classifier = NearestNeighborClassifier()  # You can switch between KNN and Nearest Neighbor
 
     # Create the main classifier instance
     store_images = True # Set to True if you want to store images in the storage

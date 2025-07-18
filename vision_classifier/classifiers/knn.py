@@ -49,4 +49,4 @@ class KNNClassifier(Classifier):
         return {"k": self.k, "similarity_metric": self.similarity_metric_name}
 
     def get_name(self):
-        return "knn"
+        return f"knn-{self.k}"

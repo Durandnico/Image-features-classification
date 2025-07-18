@@ -55,4 +55,4 @@ class SVMClassifier(Classifier):
         }
 
     def get_name(self):
-        return "svm"
+        return f"svm-{self.kernel}-C{self.C}"

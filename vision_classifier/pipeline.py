@@ -78,16 +78,8 @@ class VisionClassifier:
         encoder_class = ENCODERS[encoder_name]
         encoder = encoder_class(**encoder_config)
 
-        classifier_name = state["classifier_metadata"]["name"]
+        classifier_name = state["classifier_metadata"]["name"].split("-")[0]
         classifier_config = state["classifier_metadata"]["config"]
-
-        try:
-            if classifier_name == "knn":
-                from .classifiers.knn import KNNClassifier
-            elif classifier_name == "nearest_neighbor":
-                from .classifiers.nearest_neighbor import NearestNeighborClassifier
-        except ImportError:
-            raise ImportError(f"Could not import {classifier_name} classifier. Please install the required dependencies.")
 
         classifier_class = CLASSIFIERS[classifier_name]
         classifier = classifier_class(**classifier_config)
