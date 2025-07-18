@@ -34,17 +34,24 @@ class VisionClassifier:
         self.classifier = new_classifier
         self.train()
 
-    def classify_image(self, image_path: str):
-        if not self.storage.get_all_classes():
-            raise ValueError("No examples added yet. Add examples and train first.")
+    def _classify_image(self, image_path: str):
         query_embedding = self.encoder.encode(image_path)
         return self.classifier.predict(query_embedding)
 
-    def classify_array(self, image_array: np.ndarray):
-        if not self.storage.get_all_classes():
-            raise ValueError("No examples added yet. Add examples and train first.")
+    def _classify_array(self, image_array: np.ndarray):
         query_embedding = self.encoder._get_embedding(image_array)
         return self.classifier.predict(query_embedding)
+
+    def classify(self, data: [str, np.ndarray]):
+        if not self.storage.get_all_classes():
+            raise ValueError("No examples added yet. Add examples and train first.")
+
+        if isinstance(data, str):
+            return self._classify_image(data)
+        elif isinstance(data, np.ndarray):
+            return self._classify_array(data)
+        else:
+            raise TypeError("Unsupported data type for classification. Please provide a file path (str) or a NumPy array.")
 
     def save(self, path: str = "vision_classifier_state.pkl"):
         self.storage.save(path, self.encoder, self.classifier)

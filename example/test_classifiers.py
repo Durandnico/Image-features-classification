@@ -21,7 +21,7 @@ def test_classifiers():
     vision_classifier.add_examples("dog", dog_images)
     vision_classifier.train()
 
-    prediction = vision_classifier.classify_image(cat_images[0])
+    prediction = vision_classifier.classify(cat_images[0])
     print(f"Prediction for a cat image with KNN: {prediction}")
     # assert prediction['prediction'] == 'cat'
 
@@ -31,7 +31,7 @@ def test_classifiers():
     nearest_centroid_classifier = NearestCentroidClassifier()
     vision_classifier.set_classifier(nearest_centroid_classifier)
 
-    prediction = vision_classifier.classify_image(dog_images[0])
+    prediction = vision_classifier.classify(dog_images[0])
     print(f"Prediction for a dog image with Nearest Centroid: {prediction}")
     # assert prediction['prediction'] == 'dog'
 
@@ -41,7 +41,7 @@ def test_classifiers():
     svm_classifier = SVMClassifier()
     vision_classifier.set_classifier(svm_classifier)
 
-    prediction = vision_classifier.classify_image(cat_images[1])
+    prediction = vision_classifier.classify(cat_images[1])
     print(f"Prediction for a cat image with SVM: {prediction}")
     # assert prediction['prediction'] == 'cat'
 

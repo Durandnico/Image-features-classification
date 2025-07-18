@@ -34,7 +34,7 @@ def creating_new_classifier_huggingface():
 
     # Classify a new image
     new_image_path = "example/example_images/cats/cat2.jpg"  # Using one of the training images for demonstration
-    prediction = vision_classifier.classify_image(new_image_path)
+    prediction = vision_classifier.classify(new_image_path)
     print(f"Classification result for {new_image_path}: {prediction}")
 
     # Save the classifier state
@@ -51,7 +51,7 @@ def loading_pretrained_classifier_huggingface():
     new_classifier = VisionClassifier.load_from_pretrained("siglip2.pkl")
 
     # Classify with the loaded classifier
-    prediction_after_load = new_classifier.classify_image(new_image_path)
+    prediction_after_load = new_classifier.classify(new_image_path)
     print(f"Classification result after loading for {new_image_path}: {prediction_after_load}")
 
 def visualize_embeddings():

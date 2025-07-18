@@ -32,7 +32,7 @@ def test_classify_from_array():
     image_array = np.array(pil_image)
 
     # 3. Classify the image using the array
-    prediction = vision_classifier.classify_array(image_array)
+    prediction = vision_classifier.classify(image_array)
 
     # 4. Print the result
     print(f"Classification result for the image array: {prediction}")
