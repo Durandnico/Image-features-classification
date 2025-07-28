@@ -18,23 +18,24 @@ def attention_pooling(embeddings):
 
 @register_encoder("huggingface")
 class HuggingFaceEncoder(Encoder):
-    def __init__(self, model_name="openai/clip-vit-base-patch32", device: str = "cpu"):
+    def __init__(self, model_name="openai/clip-vit-base-patch32", device: str = "cpu", trust_remote_code: bool = False):
         super().__init__(device)
         self.model_name = model_name
         self.model = None
         self.processor = None
         self.processor_type = None
+        self.trust_remote_code = trust_remote_code
         self._load_model()
 
     def _load_model(self):
         print(f"Loading model {self.model_name} on {self.device}...")
-        self.model = AutoModel.from_pretrained(self.model_name).to(self.device)
+        self.model = AutoModel.from_pretrained(self.model_name, trust_remote_code=self.trust_remote_code).to(self.device)
         try:
-            self.processor = AutoProcessor.from_pretrained(self.model_name)
+            self.processor = AutoProcessor.from_pretrained(self.model_name, trust_remote_code=self.trust_remote_code, use_fast=True)
             self.processor_type = "image"
         except Exception:
             try:
-                self.processor = AutoVideoProcessor.from_pretrained(self.model_name)
+                self.processor = AutoVideoProcessor.from_pretrained(self.model_name, trust_remote_code=self.trust_remote_code use_fast=True)
                 self.processor_type = "video"
             except Exception:
                 raise ValueError(f"Could not load processor for model {self.model_name}.")
@@ -47,12 +48,18 @@ class HuggingFaceEncoder(Encoder):
     def _get_embedding(self, image):
         with torch.no_grad():
             if self.processor_type == "image":
-                inputs = self.processor(text="", images=image, return_tensors="pt").to(self.device)
+                inputs = self.processor(images=image, return_tensors="pt").to(self.device)
                 if 'input_ids' in inputs:
                     del inputs['input_ids']
                 if 'attention_mask' in inputs:
                     del inputs['attention_mask']
-                features = self.model.get_image_features(**inputs)
+
+                # check if the model has a get_image_features method
+                if hasattr(self.model, 'get_image_features'):
+                    features = self.model.get_image_features(**inputs)
+                else:
+                    features = self.model(**inputs).last_hidden_state
+
             elif self.processor_type == "video":
                 NUMBER_OF_FRAMES = 4
                 pixel_values = self.processor(image, return_tensors="pt").to(self.device)["pixel_values_videos"]
