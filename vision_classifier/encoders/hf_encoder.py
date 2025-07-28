@@ -16,15 +16,23 @@ def attention_pooling(embeddings):
     pooled = torch.sum(attention_weights.unsqueeze(1) * embeddings, dim=0, keepdim=True)
     return pooled
 
+def mean_pooling(embeddings):
+    """
+    embeddings: Tensor of shape [seq_len, hidden_dim]
+    returns: Tensor of shape [1, hidden_dim]
+    """
+    return embeddings.mean(dim=0, keepdim=True)
+
 @register_encoder("huggingface")
 class HuggingFaceEncoder(Encoder):
-    def __init__(self, model_name="openai/clip-vit-base-patch32", device: str = "cpu", trust_remote_code: bool = False):
+    def __init__(self, model_name="openai/clip-vit-base-patch32", device: str = "cpu", trust_remote_code: bool = False, pooling_method: str = "attention"):
         super().__init__(device)
         self.model_name = model_name
         self.model = None
         self.processor = None
         self.processor_type = None
         self.trust_remote_code = trust_remote_code
+        self.pooling_method = pooling_method
         self._load_model()
 
     def _load_model(self):
@@ -75,7 +83,12 @@ class HuggingFaceEncoder(Encoder):
                     raise ValueError("Features should be 2D or 3D tensor with batch size of 1.")
             
             if features.shape[0] > 1:
-                features = attention_pooling(features)
+                if self.pooling_method == "mean":
+                    features = mean_pooling(features)
+                elif self.pooling_method == "attention":
+                    features = attention_pooling(features)
+                else:
+                    raise ValueError(f"Unsupported pooling method: {self.pooling_method}")
 
             embedding = features / features.norm(dim=1, keepdim=True)
             return embedding.cpu().numpy().squeeze()
