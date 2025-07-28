@@ -6,16 +6,22 @@ from vision_classifier.storage.in_memory import InMemoryStorage
 from vision_classifier.registry import ENCODERS, CLASSIFIERS
 import numpy as np
 import pickle
+import torch
 
 class VisionClassifier:
-    def __init__(self, encoder: Encoder, classifier: Classifier, storage: Storage, store_images: bool = False, device: str = "cpu"):
+    def __init__(self, encoder: Encoder, classifier: Classifier, storage: Storage, store_images: bool = False, device: str | None = None):
         self.encoder = encoder
         self.classifier = classifier
         self.storage = storage
         self.store_images = store_images
 
+        new_device = device or self.encoder.device or ("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = new_device
+
         # Set the device for the encoder
-        self.encoder.to(device)
+        if new_device != self.encoder.device:
+            self.encoder.to(new_device)
+            self.encoder.device = new_device
 
     def add_examples(self, class_name: str, image_paths: List[str]):
         for img_path in image_paths:
@@ -66,12 +72,15 @@ class VisionClassifier:
         self.storage.load(path, self.encoder, self.classifier)
 
     @staticmethod
-    def load_from_pretrained(path: str, device: str = "cpu"):
+    def load_from_pretrained(path: str, device: str | None = None):
         with open(path, "rb") as f:
             state = pickle.load(f)
 
         encoder_name = state["encoder_metadata"]["name"]
         encoder_config = state["encoder_metadata"]["config"]
+
+        device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        encoder_config["device"] = device
         
         try:
             if encoder_name == "huggingface":
@@ -95,6 +104,6 @@ class VisionClassifier:
         storage.class_examples = state["data"]["class_examples"]
         storage.class_images = state["data"].get("class_images", {})
 
-        vision_classifier = VisionClassifier(encoder, classifier, storage)
+        vision_classifier = VisionClassifier(encoder, classifier, storage, device=device)
         vision_classifier.train()
         return vision_classifier
