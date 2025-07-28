@@ -91,7 +91,7 @@ class VisionClassifier:
             raise ImportError(f"Could not import {encoder_name} encoder. Please install the required dependencies.")
 
         encoder_class = ENCODERS[encoder_name]
-        encoder = encoder_class(**encoder_config, device=device)
+        encoder = encoder_class(**encoder_config)
 
         classifier_name = state["classifier_metadata"]["name"].split("-")[0]
         classifier_config = state["classifier_metadata"]["config"]

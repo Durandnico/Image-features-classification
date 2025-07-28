@@ -70,8 +70,6 @@ class FiftyOneVisualizer:
 
         if launch_app:
             session = fo.launch_app(dataset)
-            plot = session.view.get_plot(brain_key)
-            plot.options.labels = "ground_truth.label"
             print("Waiting for FiftyOne session to close...")
             session.wait()
 

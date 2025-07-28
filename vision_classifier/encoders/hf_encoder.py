@@ -35,7 +35,7 @@ class HuggingFaceEncoder(Encoder):
             self.processor_type = "image"
         except Exception:
             try:
-                self.processor = AutoVideoProcessor.from_pretrained(self.model_name, trust_remote_code=self.trust_remote_code use_fast=True)
+                self.processor = AutoVideoProcessor.from_pretrained(self.model_name, trust_remote_code=self.trust_remote_code, use_fast=True)
                 self.processor_type = "video"
             except Exception:
                 raise ValueError(f"Could not load processor for model {self.model_name}.")
