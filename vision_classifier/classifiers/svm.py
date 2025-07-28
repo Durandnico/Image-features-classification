@@ -7,11 +7,12 @@ from sklearn.svm import SVC
 
 @register_classifier("svm")
 class SVMClassifier(Classifier):
-    def __init__(self, C=1.0, kernel='linear', gamma='scale', probability=True):
+    def __init__(self, C=1.0, kernel='linear', gamma='scale', probability=True, threshold=0.75):
         self.C = C
         self.kernel = kernel
         self.gamma = gamma
         self.probability = probability
+        self.threshold = threshold
         self.model = SVC(
             C=self.C, 
             kernel=self.kernel, 
@@ -40,6 +41,9 @@ class SVMClassifier(Classifier):
         prediction_index = np.argmax(prediction_proba)
         prediction = self.class_names[prediction_index]
         confidence = prediction_proba[0, prediction_index]
+
+        if confidence < self.threshold:
+            prediction = "unknown"
         
         return {
             "prediction": prediction,
@@ -55,4 +59,4 @@ class SVMClassifier(Classifier):
         }
 
     def get_name(self):
-        return f"svm-{self.kernel}-C{self.C}"
+        return f"svm-{self.kernel}-C{self.C}-t{self.threshold}"

@@ -55,4 +55,4 @@ class NearestNeighborClassifier(Classifier):
         return {"similarity_metric": self.similarity_metric_name, "threshold": self.threshold}
 
     def get_name(self):
-        return "nearest_neighbor"
+        return f"nearest_neighbor-{self.similarity_metric_name}-{self.threshold}"
